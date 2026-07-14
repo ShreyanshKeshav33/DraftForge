@@ -35,8 +35,9 @@ def update(db: Session, user_id: int, payload: UserUpdate):
 
     if payload.email or payload.username:
         conflict = db.query(User).filter(
-            ((User.email == payload.email) | (User.username == payload.username))
-        ).first()
+    ((User.email == payload.email) | (User.username == payload.username)),
+    User.id != user_id
+).first()
         if conflict:
             return "conflict"  # Email or username already exists for another user
 
@@ -49,3 +50,11 @@ def update(db: Session, user_id: int, payload: UserUpdate):
     db.commit()
     db.refresh(user)
     return user
+
+def delete(db: Session, user_id:int):
+    user= db.query(User).filter(User.id==user_id).first()
+    if not user:
+        return None
+    db.delete(user)
+    db.commit()
+    return True

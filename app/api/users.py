@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
@@ -37,3 +37,12 @@ def update_user(id: int, payload: UserUpdate, db: Session = Depends(get_db)):
     if user=="conflict":
         raise HTTPException(status_code=400, detail="Email or username already exists for another user")
     return user
+
+@router.delete("/users/{id}")
+def delete_user(id: int, db:Session=Depends(get_db)):
+    user=crud_user.delete(db, id)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="user not found")
+    
+    return Response(status_code=204)
