@@ -6,8 +6,11 @@ from app.schemas.document import DocumentCreate, DocumentUpdate
 def get_all(db: Session, user_id: int):
     return db.query(Document).filter(Document.user_id==user_id).all()
 
-def get_by_id(db: Session, document_id: int):
-    return db.query(Document).filter(Document.id == document_id).first()
+def get_by_id(db: Session, user_id: int, document_id: int):
+    return db.query(Document).filter(
+        Document.id == document_id,
+        Document.user_id == user_id
+    ).first()
 
 def create(db: Session, user_id:int, payload: DocumentCreate):
     document = Document(
@@ -20,8 +23,8 @@ def create(db: Session, user_id:int, payload: DocumentCreate):
     db.refresh(document)
     return document
 
-def update(db: Session, document_id: int, payload: DocumentUpdate):
-    document =db.query(Document).filter(Document.id==document_id).first()
+def update(db: Session, document_id: int, user_id:int, payload: DocumentUpdate):
+    document =db.query(Document).filter(Document.id==document_id, Document.user_id==user_id).first()
 
     if not document:
         return None #no doc found
@@ -37,8 +40,8 @@ def update(db: Session, document_id: int, payload: DocumentUpdate):
 
     
 
-def delete(db: Session, document_id:int):
-    document= db.query(Document).filter(Document.id==document_id).first()
+def delete(db: Session, user_id: int, document_id:int):
+    document= db.query(Document).filter(Document.id==document_id, Document.user_id==user_id).first()
     if not document:
         return None
     db.delete(document)

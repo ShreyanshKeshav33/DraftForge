@@ -1,22 +1,22 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 
-class DocumentCreate(BaseModel):
-    title: str
-    content: Optional[str]
+class UserCreate(BaseModel):
+    email: EmailStr
+    username: str
+    password: str
 
-class DocumentUpdate(BaseModel):
-    
-    title: Optional[str]=None
-    content: Optional[str]=None
-    
-class DocumentResponse(BaseModel):
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    username: Optional[str] = None
+    password: Optional[str] = None
+
+class UserResponse(BaseModel):
     id: int
-    title: str
-    content: Optional[str]
-    user_id: int
+    email: EmailStr
+    username: str
+    is_active: bool
     created_at: datetime
-    updated_at: datetime
 
-    model_config= {"from_attributes": True}    
+    model_config = {"from_attributes": True}
